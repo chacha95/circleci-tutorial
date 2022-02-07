@@ -1,31 +1,29 @@
 version: 2.1
 
-# run job
+# job description
 jobs:
   build:
-    # home dir
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.6.4"
-    # step
-    setps:
+    steps:
       - checkout
       - run: python3 main.py
-    test:
-      working_directory: ~/circleci-python
-      docker:
-        - image: "circleci/python:3.6.4"
-      steps:
-        - checkout
-        - run: python3 main-test.py
+  test:
+    working_directory: ~/circleci-python
+    docker:
+      - image: "circleci/python:3.6.4"
+    steps:
+      - checkout
+      - run: python3 main-test.py
 
-  workflows:
-    build_and_test:
-      jobs:
-        # build job 실행
-        - build
-        # test job 실행
-        - test:
-          # build가 성공하지 않았으면 test 실행하지 않음
+# 실제 workflow(job들의 실행)
+workflows:
+  build_and_test:
+    # 해야할 업무
+    jobs:
+      - build
+      - test:
+          # test 전에 필수적으로 해야할 job
           requires:
             - build
